@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
 import { User } from 'generated/prisma';
+import { PrismaService } from '../prisma/prisma.service';
+import { userSelectFields } from '../prisma/utils/userSelectFields';
 import { CreateUserDTO } from './domain/dto/createUser.dto';
 import { UpdateUserDTO } from './domain/dto/updateUser.dto';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -11,11 +12,16 @@ export class UserService {
 
   async create(body: CreateUserDTO): Promise<User> {
     body.password = await this.hashPassword(body.password);
-    return await this.prisma.user.create({ data: body });
+    return await this.prisma.user.create({
+      data: body,
+      select: userSelectFields,
+    });
   }
 
   async list() {
-    return await this.prisma.user.findMany();
+    return await this.prisma.user.findMany({
+      select: userSelectFields,
+    });
   }
 
   async show(id: number) {
@@ -33,6 +39,7 @@ export class UserService {
     return await this.prisma.user.update({
       where: { id },
       data: body,
+      select: userSelectFields,
     });
   }
 
@@ -41,9 +48,16 @@ export class UserService {
     return await this.prisma.user.delete({ where: { id } });
   }
 
+  async findByEmail(email: string) {
+    return await this.prisma.user.findUnique({
+      where: { email },
+    });
+  }
+
   private async idIdExists(id: number) {
     const user = await this.prisma.user.findUnique({
       where: { id },
+      select: userSelectFields,
     });
 
     if (!user) {
