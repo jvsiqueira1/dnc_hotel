@@ -8,6 +8,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { Role, type User as UserType } from 'generated/prisma';
 import { ParamId } from 'src/shared/decorators/paramId.decorator';
 import { Roles } from 'src/shared/decorators/roles.decorator';
@@ -19,7 +20,7 @@ import { CreateUserDTO } from './domain/dto/createUser.dto';
 import { UpdateUserDTO } from './domain/dto/updateUser.dto';
 import { UserService } from './user.services';
 
-@UseGuards(AuthGuard, RoleGuard)
+@UseGuards(AuthGuard, RoleGuard, ThrottlerGuard)
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
