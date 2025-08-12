@@ -1,23 +1,22 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Role, User } from 'generated/prisma';
-import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDTO } from '../users/domain/dto/createUser.dto';
 import { UserService } from '../users/user.services';
 import { AuthLoginDTO } from './domain/dto/authLogin.dto';
 import { AuthRegisterDTO } from './domain/dto/authRegister.dto';
 import { AuthResetPasswordDTO } from './domain/dto/authResetPassword.dto';
 import { ValidateTokenDTO } from './domain/dto/validateToken.dto';
+import { templateHTML } from './utils/templateHTML';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly prisma: PrismaService,
     private readonly userService: UserService,
+    private readonly mailService: MailerService,
   ) {}
 
   async generateJwtToken(user: User, expiresIn: string = '1d') {
@@ -73,12 +72,21 @@ export class AuthService {
 
     const token = await this.generateJwtToken(user, '30m');
 
-    return token;
+    await this.mailService.sendMail({
+      to: email,
+      subject: 'Reset Password - DNC Hotel',
+      html: templateHTML(user.name, token.access_token),
+    });
+
+    return { message: `A verification code has been sent to ${user.email}` };
   }
 
   async validateToken(token: string): Promise<ValidateTokenDTO> {
     try {
-      const decoded = await this.jwtService.verifyAsync(token, {
+      const decoded = await this.jwtService.verifyAsync<{
+        sub: string;
+        name: string;
+      }>(token, {
         secret: process.env.JWT_SECRET,
         audience: 'users',
         issuer: 'dnc_hotel',
@@ -86,7 +94,7 @@ export class AuthService {
 
       return { valid: true, decoded };
     } catch (error) {
-      return { valid: false, message: error.message };
+      return { valid: false, message: (error as Error).message };
     }
   }
 }

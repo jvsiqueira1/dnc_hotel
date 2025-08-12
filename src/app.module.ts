@@ -1,3 +1,4 @@
+import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './modules/auth/auth.module';
@@ -15,6 +16,20 @@ import { UserModule } from './modules/users/user.module';
         limit: 3,
       },
     ]),
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT || '587'),
+        secure: false,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      },
+      defaults: {
+        from: `"dnc_hotel" <${process.env.EMAIL_USER}>`,
+      },
+    }),
   ],
   providers: [
     {
