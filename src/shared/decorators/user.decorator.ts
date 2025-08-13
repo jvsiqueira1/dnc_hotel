@@ -3,16 +3,16 @@ import {
   ExecutionContext,
   NotFoundException,
 } from '@nestjs/common';
-
-interface RequestUser {
-  [key: string]: unknown;
-}
+import { User as UserType } from 'generated/prisma';
 
 export const User = createParamDecorator(
-  <T = RequestUser>(filter: string, context: ExecutionContext) => {
-    const user = context.switchToHttp().getRequest<{ user: RequestUser }>();
+  <T = UserType>(filter: string, context: ExecutionContext) => {
+    const request = context.switchToHttp().getRequest<{ user: UserType }>();
+    const user = request.user;
 
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
     if (filter) {
       if (!user[filter]) {

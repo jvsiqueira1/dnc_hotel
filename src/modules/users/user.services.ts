@@ -4,7 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { stat, unlink } from 'fs/promises';
 import { User } from 'generated/prisma';
+import { join, resolve } from 'path';
 import { PrismaService } from '../prisma/prisma.service';
 import { userSelectFields } from '../prisma/utils/userSelectFields';
 import { CreateUserDTO } from './domain/dto/createUser.dto';
@@ -31,12 +33,12 @@ export class UserService {
   }
 
   async show(id: number) {
-    const user = await this.idIdExists(id);
+    const user = await this.isIdExists(id);
     return user;
   }
 
   async update(id: number, body: UpdateUserDTO) {
-    await this.idIdExists(id);
+    await this.isIdExists(id);
 
     if (body.password) {
       body.password = await this.hashPassword(body.password);
@@ -50,7 +52,7 @@ export class UserService {
   }
 
   async delete(id: number) {
-    await this.idIdExists(id);
+    await this.isIdExists(id);
     await this.prisma.user.delete({ where: { id } });
     return { message: 'User deleted successfully' };
   }
@@ -61,7 +63,24 @@ export class UserService {
     });
   }
 
-  private async idIdExists(id: number) {
+  async uploadAvatar(id: number, avatarFilename: string) {
+    const user = await this.isIdExists(id);
+    const directory = resolve(__dirname, '..', '..', '..', 'uploads');
+
+    if (user.avatar) {
+      const userAvatarFilePath = join(directory, user.avatar);
+      const userAvatarFileExists = await stat(userAvatarFilePath);
+
+      if (userAvatarFileExists) {
+        await unlink(userAvatarFilePath);
+      }
+    }
+    const userUpdated = await this.update(id, { avatar: avatarFilename });
+
+    return userUpdated;
+  }
+
+  private async isIdExists(id: number) {
     const user = await this.prisma.user.findUnique({
       where: { id },
       select: userSelectFields,
