@@ -20,11 +20,14 @@ model User {
   password String
   role Role @default(USER)
   avatar String?
+  hotels Hotel[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("users")
 }
+
+// 1 User pode ter varios Hotéis - 1 : N
 
 model Hotel {
   id Int @id @default(autoincrement())
@@ -33,6 +36,8 @@ model Hotel {
   address String
   image String?
   price Float
+  ownerId Int
+  owner User @relation(fields: [ownerId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
