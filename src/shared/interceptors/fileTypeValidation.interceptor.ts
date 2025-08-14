@@ -27,13 +27,6 @@ export class FileTypeValidationInterceptor implements NestInterceptor {
           `Tipo de arquivo não suportado. Tipos permitidos: ${allowedMimeTypes.join(', ')}`,
         );
       }
-
-      // Log para debug
-      console.log('=== FILE VALIDATION DEBUG ===');
-      console.log('File mimetype:', file.mimetype);
-      console.log('File originalname:', file.originalname);
-      console.log('File size:', file.size);
-      console.log('================================');
     }
 
     return next.handle();

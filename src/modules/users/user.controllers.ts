@@ -82,7 +82,6 @@ export class UserController {
     )
     avatar: Express.Multer.File,
   ) {
-    console.log(avatar);
     return this.userService.uploadAvatar(id, avatar.filename);
   }
 }
