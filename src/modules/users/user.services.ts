@@ -3,9 +3,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { stat, unlink } from 'fs/promises';
-import { User } from 'generated/prisma';
 import { join, resolve } from 'path';
 import { PrismaService } from '../prisma/prisma.service';
 import { userSelectFields } from '../prisma/utils/userSelectFields';

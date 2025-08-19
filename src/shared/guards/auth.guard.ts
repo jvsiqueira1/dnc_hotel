@@ -4,8 +4,8 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { Request } from 'express';
-import { User } from 'generated/prisma';
 import { AuthService } from 'src/modules/auth/auth.service';
 import { UserService } from 'src/modules/users/user.services';
 

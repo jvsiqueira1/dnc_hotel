@@ -14,7 +14,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Role } from 'generated/prisma';
+import { Role } from '@prisma/client';
 import { ParamId } from 'src/shared/decorators/paramId.decorator';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { User } from 'src/shared/decorators/user.decorator';

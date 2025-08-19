@@ -1,4 +1,4 @@
-import type { Hotel } from 'generated/prisma';
+import type { Hotel } from '@prisma/client';
 import { CreateHotelDTO } from '../dto/create-hotel.dto';
 import { UpdateHotelDTO } from '../dto/update-hotel.dto';
 

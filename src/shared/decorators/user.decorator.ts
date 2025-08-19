@@ -3,7 +3,7 @@ import {
   ExecutionContext,
   NotFoundException,
 } from '@nestjs/common';
-import { User as UserType } from 'generated/prisma';
+import { User as UserType } from '@prisma/client';
 
 export const User = createParamDecorator(
   <T = UserType>(filter: string, context: ExecutionContext) => {

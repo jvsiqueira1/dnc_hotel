@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ThrottlerGuard } from '@nestjs/throttler';
-import { Role, type User as UserType } from 'generated/prisma';
+import { Role, type User as UserType } from '@prisma/client';
 import { ParamId } from 'src/shared/decorators/paramId.decorator';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { User } from 'src/shared/decorators/user.decorator';

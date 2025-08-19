@@ -2,9 +2,10 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './modules/auth/auth.module';
-import { PrismaModule } from './modules/prisma/prisma.module';
-import { UserModule } from './modules/users/user.module';
 import { HotelsModule } from './modules/hotels/hotels.module';
+import { PrismaModule } from './modules/prisma/prisma.module';
+import { ReservationsModule } from './modules/reservations/reservations.module';
+import { UserModule } from './modules/users/user.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { HotelsModule } from './modules/hotels/hotels.module';
       },
     }),
     HotelsModule,
+    ReservationsModule,
   ],
   providers: [
     {

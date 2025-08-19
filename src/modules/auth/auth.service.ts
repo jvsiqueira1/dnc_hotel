@@ -1,8 +1,8 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Role, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { Role, User } from 'generated/prisma';
 import { CreateUserDTO } from '../users/domain/dto/createUser.dto';
 import { UserService } from '../users/user.services';
 import { AuthLoginDTO } from './domain/dto/authLogin.dto';
