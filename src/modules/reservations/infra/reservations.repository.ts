@@ -30,7 +30,9 @@ export class ReservationRepository implements IReservationsRepository {
   }
 
   findById(id: number): Promise<Reservation | null> {
-    return this.prisma.reservation.findUnique({ where: { id } });
+    return this.prisma.reservation.findUnique({
+      where: { id },
+    });
   }
 
   findAll(): Promise<Reservation[]> {

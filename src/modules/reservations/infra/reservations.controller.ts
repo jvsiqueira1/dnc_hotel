@@ -1,11 +1,12 @@
 import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
-import { ReservationStatus, Role } from '@prisma/client';
+import { Role } from '@prisma/client';
 import { ParamId } from 'src/shared/decorators/paramId.decorator';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { User } from 'src/shared/decorators/user.decorator';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { RoleGuard } from 'src/shared/guards/role.guard';
 import { CreateReservationDTO } from '../domain/dto/create-reservation.dto';
+import { UpdateReservationStatusDTO } from '../domain/dto/update-reservation.dto';
 import { CreateReservationService } from '../services/createReservation.service';
 import { FindAllReservationsService } from '../services/findAllReservations.service';
 import { FindByIdReservationsService } from '../services/findByIdReservations.service';
@@ -47,8 +48,8 @@ export class ReservationsController {
   @Patch(':id')
   updateStatus(
     @ParamId() id: number,
-    @Body('status') status: ReservationStatus,
+    @Body() body: UpdateReservationStatusDTO,
   ) {
-    return this.updateStatusReservationsService.execute(id, status);
+    return this.updateStatusReservationsService.execute(id, body.status);
   }
 }
