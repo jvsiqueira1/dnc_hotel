@@ -83,7 +83,7 @@ export class HotelsController {
     FileValidationInterceptor,
     FileTypeValidationInterceptor,
   )
-  @Post('image/:hotelId')
+  @Patch('image/:hotelId')
   uploadImage(
     @Param('hotelId') id: string,
     @UploadedFile(
