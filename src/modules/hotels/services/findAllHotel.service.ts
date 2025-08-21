@@ -19,22 +19,32 @@ export class FindAllHotelsService {
 
     const dataRedis = await this.redis.get(REDIS_HOTEL_KEY);
 
-    let data: Hotel[];
-
+    let data: Hotel[] | null = null;
     if (dataRedis) {
-      data = JSON.parse(dataRedis) as Hotel[];
-    } else {
+      try {
+        data = JSON.parse(dataRedis) as Hotel[];
+      } catch {
+        data = null;
+      }
+    }
+
+    if (!data) {
       data = await this.hotelRepositories.findHotels(offSet, limit);
+      data = data.map((hotel: Hotel) => {
+        if (hotel.image) {
+          hotel.image = `${process.env.APP_API_URL}/hotel-image/${hotel.image}`;
+        }
+        return hotel;
+      });
       await this.redis.set(REDIS_HOTEL_KEY, JSON.stringify(data));
     }
 
     const total = await this.hotelRepositories.countHotels();
-
     return {
       total,
       page,
       per_page: limit,
-      data,
+      data: data || [],
     };
   }
 }
